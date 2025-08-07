@@ -93,7 +93,7 @@ func (h *taskHandler) GetAllTasksByGroupIDHandler(c *gin.Context) {
 		return
 	}
 
-	tasks, err := h.ts.GetAllTasksByGroupID(ctx, groupID)
+	tasks, err := h.ts.GetTasksByGroupID(ctx, groupID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -124,7 +124,7 @@ func (h *taskHandler) GetOverdueTasksByGroupIDHandler(c *gin.Context) {
 		return
 	}
 
-	tasks, err := h.ts.GetOverdueTasks(ctx, groupID)
+	tasks, err := h.ts.GetOverdueTasksByGroupID(ctx, groupID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
