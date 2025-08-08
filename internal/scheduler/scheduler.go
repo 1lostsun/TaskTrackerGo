@@ -17,11 +17,11 @@ func StartEscalationScheduler(ctx context.Context, ts service.TaskService) {
 			default:
 				err := ts.EscalateOverdueTasks(ctx)
 				if err != nil {
-					log.Fatalf("EscalateOverdueTasks: %v", err)
+					log.Fatalf("Escalating Overdue Tasks: %v", err)
 				}
 
-				log.Print("EscalateOverdueTasks finished")
-				time.Sleep(time.Minute)
+				log.Print("Escalating Overdue Tasks was finished")
+				time.Sleep(10 * time.Minute)
 			}
 		}
 	}()

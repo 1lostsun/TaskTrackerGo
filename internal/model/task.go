@@ -14,15 +14,6 @@ type Task struct {
 }
 
 type TaskRequest struct {
-	GroupID     uint64    `json:"group_id"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	TaskState   string    `json:"task_state"`
-	Worker      string    `json:"worker"`
-	Deadline    time.Time `json:"deadline"`
-}
-
-type UpdateTaskRequest struct {
 	GroupID     *uint64    `json:"group_id"`
 	Name        *string    `json:"name"`
 	Description *string    `json:"description"`

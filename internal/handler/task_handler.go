@@ -13,7 +13,7 @@ import (
 type TaskHandler interface {
 	CreateTaskHandler(c *gin.Context)
 	GetTaskByIDHandler(c *gin.Context)
-	GetAllTasksByGroupIDHandler(c *gin.Context)
+	GetTasksByGroupIDHandler(c *gin.Context)
 	GetOverdueTasksByGroupIDHandler(c *gin.Context)
 	GetTasksByWorkerHandler(c *gin.Context)
 	UpdateTaskHandler(c *gin.Context)
@@ -38,12 +38,12 @@ func (h *taskHandler) CreateTaskHandler(c *gin.Context) {
 	}
 
 	task := model.Task{
-		GroupID:     input.GroupID,
-		Name:        input.Name,
-		Description: input.Description,
-		TaskState:   input.TaskState,
-		Worker:      input.Worker,
-		Deadline:    input.Deadline,
+		GroupID:     *input.GroupID,
+		Name:        *input.Name,
+		Description: *input.Description,
+		TaskState:   *input.TaskState,
+		Worker:      *input.Worker,
+		Deadline:    *input.Deadline,
 		CreatedAt:   time.Now(),
 	}
 
@@ -84,7 +84,7 @@ func (h *taskHandler) GetTaskByIDHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"task": taskResponse})
 }
 
-func (h *taskHandler) GetAllTasksByGroupIDHandler(c *gin.Context) {
+func (h *taskHandler) GetTasksByGroupIDHandler(c *gin.Context) {
 	ctx := c.Request.Context()
 	groupIDStr := c.Param("id")
 	groupID, err := strconv.ParseUint(groupIDStr, 10, 64)
@@ -173,7 +173,7 @@ func (h *taskHandler) GetTasksByWorkerHandler(c *gin.Context) {
 }
 
 func (h *taskHandler) UpdateTaskHandler(c *gin.Context) {
-	var input model.UpdateTaskRequest
+	var input model.TaskRequest
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -187,7 +187,7 @@ func (h *taskHandler) UpdateTaskHandler(c *gin.Context) {
 		return
 	}
 
-	updates, err := validation.UpdatesBuilder(input)
+	updates, err := validation.TaskUpdatesBuilder(input)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

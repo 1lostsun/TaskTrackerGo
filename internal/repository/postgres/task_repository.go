@@ -47,7 +47,10 @@ func (r *taskRepository) FindTaskByID(ctx context.Context, id uint64) (*model.Ta
 
 func (r *taskRepository) FindTasksByGroupID(ctx context.Context, groupID uint64) ([]*model.Task, error) {
 	var tasks []*model.Task
-	err := r.db.WithContext(ctx).Where("group_id = ?", groupID).Find(&tasks).Error
+	err := r.db.WithContext(ctx).
+		Where("group_id = ?", groupID).
+		Order("id asc").
+		Find(&tasks).Error
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +60,10 @@ func (r *taskRepository) FindTasksByGroupID(ctx context.Context, groupID uint64)
 
 func (r *taskRepository) FindTasksByWorker(ctx context.Context, worker string) ([]*model.Task, error) {
 	var tasks []*model.Task
-	err := r.db.WithContext(ctx).Where("worker = ?", worker).Find(&tasks).Error
+	err := r.db.WithContext(ctx).
+		Where("worker = ?", worker).
+		Order("created_at asc").
+		Find(&tasks).Error
 	if err != nil {
 		return nil, err
 	}
@@ -69,6 +75,7 @@ func (r *taskRepository) FindOverdueTasksByGroupID(ctx context.Context, groupID 
 	var overdueTasks []*model.Task
 	err := r.db.WithContext(ctx).
 		Where("group_id = ? AND deadline < ?", groupID, time.Now()).
+		Order("created_at asc").
 		Find(&overdueTasks).Error
 	if err != nil {
 		return nil, err
@@ -78,7 +85,9 @@ func (r *taskRepository) FindOverdueTasksByGroupID(ctx context.Context, groupID 
 
 func (r *taskRepository) FindOverdueAndActiveTasks(ctx context.Context) ([]*model.Task, error) {
 	var tasks []*model.Task
-	err := r.db.WithContext(ctx).Find(&tasks).Error
+	err := r.db.WithContext(ctx).
+		Order("id asc").
+		Find(&tasks).Error
 	if err != nil {
 		return nil, err
 	}

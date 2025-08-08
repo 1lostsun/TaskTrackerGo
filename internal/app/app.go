@@ -25,12 +25,15 @@ func Run() {
 		log.Fatal("Error connecting to database")
 	}
 
+	taskGroupRepo := postgres.NewTaskGroupRepository(database)
 	taskRepo := postgres.NewTaskRepo(database)
+	taskGroupService := service.NewTaskGroupService(taskGroupRepo)
 	taskService := service.NewTaskService(taskRepo)
 	scheduler.StartEscalationScheduler(ctx, taskService)
+	taskGroupHandler := handler.NewTaskGroupHandler(taskGroupService)
 	taskHandler := handler.NewTaskHandler(taskService)
 	engine := gin.Default()
-	r := router.NewRouter(engine, taskHandler)
+	r := router.NewRouter(engine, taskHandler, taskGroupHandler)
 	r.InitRoutes()
 
 	runErr := engine.Run(":8080")

@@ -10,7 +10,7 @@ import (
 
 func IsValidState(status string) bool {
 	switch status {
-	case "todo":
+	case "pending":
 		return true
 	case "in_progress":
 		return true
@@ -23,7 +23,7 @@ func IsValidState(status string) bool {
 	}
 }
 
-func UpdatesBuilder(request model.UpdateTaskRequest) (map[string]interface{}, error) {
+func TaskUpdatesBuilder(request model.TaskRequest) (map[string]interface{}, error) {
 	updates := map[string]interface{}{}
 
 	if request.GroupID != nil {

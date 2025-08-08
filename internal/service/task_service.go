@@ -90,7 +90,8 @@ func (s *taskService) DeleteTask(ctx context.Context, id uint64) error {
 }
 
 func (s *taskService) EscalateOverdueTasks(ctx context.Context) error {
-	updates := map[string]interface{}{}
+	updates := make(map[string]interface{}, 1)
+	updates["task_state"] = "overdue"
 	tasks, err := s.tr.FindOverdueAndActiveTasks(ctx)
 	if err != nil {
 		return err
@@ -99,7 +100,6 @@ func (s *taskService) EscalateOverdueTasks(ctx context.Context) error {
 	for _, task := range tasks {
 		if task.Deadline.Before(time.Now()) {
 			if !(task.TaskState == "done") {
-				updates["task_state"] = "overdue"
 				err := s.tr.UpdateTask(ctx, task.ID, updates)
 				if err != nil {
 					return err
